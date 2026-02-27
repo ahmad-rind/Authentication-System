@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Register – MDB System{% endblock %}
+{% block body %}
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <div class="logo">
+      <h1>🎓 MDB</h1>
+      <p>Create your Student Account</p>
+    </div>
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+          <div class="alert {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+    </div>
+    <form method="post">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Full Name" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password <span class="text-muted">(min 6 chars)</span></label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" value="Student" disabled style="background:#f0f0f0;color:#888;cursor:not-allowed;">
+        <small class="text-muted">Students self-register. Instructors/Admins are created by Admin.</small>
+      </div>
+      <button type="submit" class="btn btn-success" style="width:100%;margin-top:0.5rem;padding:0.75rem">Create Account</button>
+    </form>
+    <div class="form-footer">
+      Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

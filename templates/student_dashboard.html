@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard – MDB{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>📚 Student Dashboard</h2>
+  <p style="color:#555;margin-bottom:1.5rem;">Welcome, <strong>{{ session.name }}</strong>! You are logged in as a <strong>Student</strong>.</p>
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-val">0</div>
+      <div class="stat-label">Enrolled Courses</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-val">0</div>
+      <div class="stat-label">Assignments</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-val">0</div>
+      <div class="stat-label">Pending Tasks</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>📋 My Profile</h3>
+  <table style="width:auto">
+    <tr><td style="padding:0.4rem 1rem 0.4rem 0;color:#888;font-weight:600;">Name</td><td>{{ session.name }}</td></tr>
+    <tr><td style="padding:0.4rem 1rem 0.4rem 0;color:#888;font-weight:600;">Role</td><td><span class="role-badge student">Student</span></td></tr>
+    <tr><td style="padding:0.4rem 1rem 0.4rem 0;color:#888;font-weight:600;">Status</td><td><span class="status-active">✔ Active</span></td></tr>
+  </table>
+</div>
+{% endblock %}

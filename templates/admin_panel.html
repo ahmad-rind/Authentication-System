@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel – MDB{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>🛡️ Admin Panel</h2>
+  <p style="color:#555;margin-bottom:1.5rem;">Manage all user accounts, roles, and access.</p>
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-val">{{ users|length }}</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-val">{{ users|selectattr('role','equalto','student')|list|length }}</div>
+      <div class="stat-label">Students</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-val">{{ users|selectattr('role','equalto','instructor')|list|length }}</div>
+      <div class="stat-label">Instructors</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-val">{{ users|selectattr('status','equalto','blocked')|list|length }}</div>
+      <div class="stat-label">Blocked</div>
+    </div>
+  </div>
+</div>
+
+<!-- Create User -->
+<div class="card">
+  <h3>➕ Create New User</h3>
+  <form method="post" action="{{ url_for('admin_create_user') }}">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Full Name" required>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="user@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required>
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select name="role">
+          <option value="student">Student</option>
+          <option value="instructor">Instructor</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create User</button>
+  </form>
+</div>
+
+<!-- User Table -->
+<div class="card">
+  <h3>👥 All Users</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Registered</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td>
+            {% if u.id == session.user_id %}
+              <span class="role-badge {{ u.role }}">{{ u.role }}</span>
+            {% else %}
+            <form method="post" action="{{ url_for('admin_change_role', uid=u.id) }}" style="display:inline-flex;gap:4px;align-items:center;">
+              <select name="role" style="padding:3px 6px;border-radius:5px;border:1px solid #ddd;font-size:0.8rem;">
+                <option value="student"    {% if u.role=='student'    %}selected{% endif %}>Student</option>
+                <option value="instructor" {% if u.role=='instructor' %}selected{% endif %}>Instructor</option>
+                <option value="admin"      {% if u.role=='admin'      %}selected{% endif %}>Admin</option>
+              </select>
+              <button type="submit" class="btn btn-secondary btn-sm">Set</button>
+            </form>
+            {% endif %}
+          </td>
+          <td><span class="status-{{ u.status }}">{{ u.status|capitalize }}</span></td>
+          <td class="text-muted">{{ u.created_at[:10] if u.created_at else '—' }}</td>
+          <td>
+            {% if u.id == session.user_id %}
+              <span class="text-muted" style="font-size:0.8rem;">You</span>
+            {% else %}
+            <div class="flex-row">
+              {% if u.status == 'active' %}
+              <form method="post" action="{{ url_for('admin_block_user', uid=u.id) }}">
+                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Block this user?')">Block</button>
+              </form>
+              {% else %}
+              <form method="post" action="{{ url_for('admin_unblock_user', uid=u.id) }}">
+                <button type="submit" class="btn btn-success btn-sm">Unblock</button>
+              </form>
+              {% endif %}
+              <form method="post" action="{{ url_for('admin_delete_user', uid=u.id) }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this user permanently?')">Delete</button>
+              </form>
+            </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

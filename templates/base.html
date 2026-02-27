@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MDB Agent System{% endblock %}</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; min-height: 100vh; }
+
+    /* ── Navbar ── */
+    .navbar {
+      background: linear-gradient(135deg, #1a237e, #283593);
+      color: #fff;
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .navbar .brand { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; }
+    .navbar .brand span { color: #90caf9; }
+    .navbar .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .navbar .nav-right .user-info { font-size: 0.85rem; color: #bbdefb; }
+    .navbar .role-badge {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 12px; letter-spacing: 0.5px;
+    }
+    .role-badge.admin     { background: #e53935; color: #fff; }
+    .role-badge.instructor{ background: #fb8c00; color: #fff; }
+    .role-badge.student   { background: #43a047; color: #fff; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.4);
+      padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── Main Container ── */
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff; border-radius: 12px; padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+    }
+    .card h2 { color: #1a237e; margin-bottom: 1.2rem; font-size: 1.4rem; }
+    .card h3 { color: #283593; margin-bottom: 1rem; font-size: 1.1rem; }
+
+    /* ── Alerts/Flash ── */
+    .alerts { margin-bottom: 1rem; }
+    .alert {
+      padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.5rem;
+      font-size: 0.9rem; border-left: 4px solid;
+    }
+    .alert.success { background: #e8f5e9; border-color: #43a047; color: #2e7d32; }
+    .alert.danger  { background: #ffebee; border-color: #e53935; color: #c62828; }
+    .alert.warning { background: #fff8e1; border-color: #fb8c00; color: #e65100; }
+    .alert.info    { background: #e3f2fd; border-color: #1976d2; color: #0d47a1; }
+
+    /* ── Forms ── */
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: #555; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 0.6rem 0.9rem; border: 1.5px solid #ddd;
+      border-radius: 8px; font-size: 0.95rem; transition: border-color 0.2s;
+      background: #fafafa;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none; border-color: #1a237e; background: #fff;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 0.6rem 1.2rem; border: none; border-radius: 8px;
+      cursor: pointer; font-size: 0.9rem; font-weight: 600;
+      transition: opacity 0.2s, transform 0.1s; display: inline-block; text-decoration: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary  { background: #1a237e; color: #fff; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-success  { background: #43a047; color: #fff; }
+    .btn-success:hover { opacity: 0.85; }
+    .btn-danger   { background: #e53935; color: #fff; }
+    .btn-danger:hover { opacity: 0.85; }
+    .btn-warning  { background: #fb8c00; color: #fff; }
+    .btn-warning:hover { opacity: 0.85; }
+    .btn-secondary{ background: #546e7a; color: #fff; }
+    .btn-sm { padding: 4px 10px; font-size: 0.78rem; border-radius: 5px; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: #1a237e; color: #fff; padding: 0.75rem 0.9rem; text-align: left; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 0.65rem 0.9rem; border-bottom: 1px solid #eee; vertical-align: middle; }
+    tr:hover td { background: #f5f5f5; }
+    .status-active  { color: #2e7d32; font-weight: 600; }
+    .status-blocked { color: #c62828; font-weight: 600; }
+
+    /* ── Auth Pages ── */
+    .auth-wrapper {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1a237e 0%, #283593 40%, #1976d2 100%);
+    }
+    .auth-box {
+      background: #fff; border-radius: 16px; padding: 2.5rem;
+      width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .auth-box .logo { text-align: center; margin-bottom: 1.5rem; }
+    .auth-box .logo h1 { color: #1a237e; font-size: 1.8rem; font-weight: 800; }
+    .auth-box .logo p  { color: #888; font-size: 0.85rem; margin-top: 4px; }
+    .auth-box .form-footer { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: #666; }
+    .auth-box .form-footer a { color: #1a237e; text-decoration: none; font-weight: 600; }
+
+    /* ── Stats cards ── */
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .stat-card {
+      flex: 1; min-width: 140px; background: #fff; border-radius: 12px;
+      padding: 1.2rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-top: 4px solid;
+    }
+    .stat-card.blue  { border-color: #1a237e; }
+    .stat-card.green { border-color: #43a047; }
+    .stat-card.orange{ border-color: #fb8c00; }
+    .stat-card.red   { border-color: #e53935; }
+    .stat-card .stat-val  { font-size: 2rem; font-weight: 800; color: #1a237e; }
+    .stat-card .stat-label{ font-size: 0.8rem; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── Misc ── */
+    hr { border: none; border-top: 1px solid #eee; margin: 1.5rem 0; }
+    .text-muted { color: #888; font-size: 0.85rem; }
+    .flex-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  </style>
+</head>
+<body>
+{% if session.user_id %}
+<nav class="navbar">
+  <div class="brand">MDB <span>Agent System</span></div>
+  <div class="nav-right">
+    <span class="user-info">{{ session.name }}</span>
+    <span class="role-badge {{ session.role }}">{{ session.role }}</span>
+    <form action="{{ url_for('logout') }}" method="post" style="display:inline">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+{% endif %}
+
+{% block body %}
+<div class="container">
+  <div class="alerts">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="alert {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+  {% block content %}{% endblock %}
+</div>
+{% endblock %}
+</body>
+</html>

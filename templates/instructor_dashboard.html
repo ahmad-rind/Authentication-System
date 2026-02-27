@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Instructor Dashboard – MDB{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>🧑‍🏫 Instructor Dashboard</h2>
+  <p style="color:#555;margin-bottom:1.5rem;">Welcome, <strong>{{ session.name }}</strong>! You are logged in as an <strong>Instructor</strong>.</p>
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-val">{{ students|length }}</div>
+      <div class="stat-label">Total Students</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-val">{{ students|selectattr('status','equalto','active')|list|length }}</div>
+      <div class="stat-label">Active Students</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-val">{{ students|selectattr('status','equalto','blocked')|list|length }}</div>
+      <div class="stat-label">Blocked Students</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>👥 Student List <span class="text-muted">(View Only)</span></h3>
+  {% if students %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Registered</th></tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ s.name }}</td>
+          <td>{{ s.email }}</td>
+          <td><span class="status-{{ s.status }}">{{ s.status|capitalize }}</span></td>
+          <td class="text-muted">{{ s.created_at[:10] if s.created_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No students registered yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
