@@ -1,35 +1,89 @@
+<div align="center">
+
 # 🔐 Authentication System
 
-A full-stack authentication web app built with Flask (Python) and MongoDB.
-Features user registration, login, logout, and an admin dashboard UI.
+**A full-stack authentication web app built with Flask & MongoDB**
 
-## 🔗 Live Demo
-[View Live](https://authentication-system-delta-olive.ve...)
+</div>
+
+---
 
 ## ✨ Features
-- User Registration & Login
-- Session-based Authentication
-- Admin UI Dashboard
-- Password hashing & security
-- MongoDB database integration
 
-## 🛠 Tech Stack
-Python • Flask • MongoDB • HTML • CSS • Jinja2 Templates
+| Feature | Description |
+|---|---|
+| 👤 User Registration | Create a new account securely |
+| 🔑 Login / Logout | Session-based authentication |
+| 🔒 Password Hashing | Passwords stored securely, never plain text |
+| 🛡️ Admin Dashboard | Dedicated admin UI for management |
+| 🗄️ MongoDB Integration | Cloud database for persistent storage |
 
-## ⚙️ How to Run Locally
+---
 
-1. Clone the repo
-   git clone https://github.com/ahmad-rind/Authentication-System
+## 🛠️ Tech Stack
 
-2. Install dependencies
-   install_flask.bat  (Windows)
-   or: pip install -r requirements.txt
+| Layer | Technology |
+|---|---|
+| Backend | Python, Flask |
+| Frontend | HTML, CSS, Jinja2 Templates |
+| Database | MongoDB |
+| Deployment | Vercel |
 
-3. Start the app
-   Start App.bat  (Windows)
-   or: python app.py
-
-4. Open browser at http://localhost:5000
+---
 
 ## 📸 Screenshots
-(add screenshots here)
+
+> Add screenshots here by pasting images (Ctrl+V) in the GitHub editor
+
+---
+
+## ⚙️ Run Locally
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/ahmad-rind/Authentication-System
+cd Authentication-System
+```
+
+**2. Install dependencies**
+```bash
+# Windows (one-click)
+install_flask.bat
+
+# Or manually
+pip install -r requirements.txt
+```
+
+**3. Start the app**
+```bash
+# Windows (one-click)
+Start App.bat
+
+# Or manually
+python app.py
+```
+
+**4. Open in browser**
+```
+http://localhost:5000
+```
+
+---
+
+## 📁 Project Structure
+```
+Authentication-System/
+├── templates/          # HTML templates (Jinja2)
+├── app.py              # Main Flask application
+├── requirements.txt    # Python dependencies
+├── vercel.json         # Vercel deployment config
+└── .gitignore
+```
+
+---
+
+<div align="center">
+
+Made with ❤️ by [Ahmad Rind](https://github.com/ahmad-rind)
+
+</div>
